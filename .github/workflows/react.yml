@@ -1,0 +1,29 @@
+# react/ 폴더가 바뀌면 린트와 빌드(타입 검사 포함)를 실행한다
+name: React
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "react/**"
+  pull_request:
+    paths:
+      - "react/**"
+  workflow_dispatch: # Actions 탭에서 직접 실행할 수도 있다
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: react
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: npm
+          cache-dependency-path: react/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build

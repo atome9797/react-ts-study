@@ -1,0 +1,28 @@
+# ts/ 폴더가 바뀌면 타입 검사를 실행한다
+name: TypeScript
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ts/**"
+  pull_request:
+    paths:
+      - "ts/**"
+  workflow_dispatch: # Actions 탭에서 직접 실행할 수도 있다
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ts
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: npm
+          cache-dependency-path: ts/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
